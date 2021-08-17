@@ -1,5 +1,6 @@
 <template>
     <div>
+        <loading v-model:active="isLoading"/>
         <div class ="text-right mt-4 ">
             <button class="btn btn-primary" @click="openModal(true)">建立新的產品</button>
         </div>
@@ -51,10 +52,10 @@
                         </div>
                         <div class="form-group">
                         <label for="customFile">或 上傳圖片
-                            <i class="fas fa-spinner fa-spin"></i>
+                            <i class="fas fa-spinner fa-spin" v-if="status.fileUploading"></i>
                         </label>
                         <input type="file" id="customFile" class="form-control"
-                            ref="files">
+                            ref="files" @change="uploadFile">
                         </div>
                         <img img="https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=828346ed697837ce808cae68d3ddc3cf&auto=format&fit=crop&w=1350&q=80"
                         class="img-fluid" :src="tempProduct.imageUrl" alt="">
@@ -107,7 +108,7 @@
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox"
                             id="is_enabled" v-model="tempProduct.is_enabled"
-                            :true-value="1" :false-value="1">
+                            :true-value="1" :false-value="0">
                             <label class="form-check-label" for="is_enabled">
                             是否啟用
                             </label>
@@ -135,6 +136,10 @@ export default {
             products:[],
             tempProduct:[],
             isNew:false,
+            isLoading:false,
+            status:{
+                fileUploading:false,
+            },
         }
     },
     methods:{
@@ -144,8 +149,10 @@ export default {
             //API 伺服器路徑
             // 所申請的APIPath
             // console.log(process.env.APIPATH, process.env.COSTOMPATH)
+            vm.isLoading = true;
             this.$http.get(api).then((response) => {
                 console.log(response.data);
+                vm.isLoading = false;
                 vm.products = response.data.products;
             });
         },
@@ -162,12 +169,13 @@ export default {
             $('#productModal').modal('show');
         },
         updateProduct(){
-            let api = `${process.env.APIPATH}/api/${process.env.COSTOMPATH}/admin/products`;
+            let api = `${process.env.APIPATH}/api/${process.env.COSTOMPATH}/admin/product`;
             let httpMethod = 'post';
             const vm = this;
             if(!vm.isNew){
-                api = `${process.env.APIPATH}/api/${process.env.COSTOMPATH}/admin/products/${vm.tempProduct.id}`;
+                api = `${process.env.APIPATH}/api/${process.env.COSTOMPATH}/admin/product/${vm.tempProduct.id}`;
                 httpMethod = 'put';
+                
             }
             this.$http[httpMethod](api ,{data: vm.tempProduct}).then((response) => {
                 console.log(response.data);
@@ -181,6 +189,33 @@ export default {
                 }
                 
             });
+        },
+        uploadFile(){
+            // console.log(this);
+            const uploadFile = this.$refs.files.files[0];
+            const vm = this;
+            //FormData 為Web API
+            //使用append將欄位新增進去
+            const formData = new FormData();
+            formData.append('file-to-upload',uploadFile);
+            const url = `${process.env.APIPATH}/api/${process.env.COSTOMPATH}/admin/upload`;
+            vm.status.fileUploading = true;
+            vm.$http.post(url,formData,{
+                headers:{
+                    'Content-Type':'multipart/form-data'
+                }
+            }).then((response)=>{
+                console.log(response.data)
+                vm.status.fileUploading = false;
+                if(response.data.success){
+                    //這樣寫不包含get and set
+                    // vm.tempProduct.imageUrl = response.data.imageUrl;
+                    // console.log(vm.tempProduct);
+
+                    //直接把data set進去
+                    vm.$set(vm.tempProduct,'imageUrl',response.data.imageUrl);
+                }
+            })
         },
     },
     created() {
