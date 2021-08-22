@@ -50,6 +50,7 @@ export default {
                 console.log(token,expired)
                 document.cookie = `hexToken=${token};expires=${new Date(expired)};`;
                 vm.$router.push('/admin/products');
+                
             }
         });
       }
