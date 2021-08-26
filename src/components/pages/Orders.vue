@@ -36,10 +36,9 @@ export default {
     },
     methods: {
         getOrders(page = 1){
-            const api = `${process.env.APIPATH}/api/${process.env.COSTOMPATH}/orders?page=${page}`;//'https://vue-course-api.hexschool.io/api/leviathan91608/products';
+            const api = `${process.env.APIPATH}/api/${process.env.COSTOMPATH}/orders?page=${page}`;
             const vm = this;
-            //API 伺服器路徑
-            // 所申請的APIPath
+            
             // console.log(process.env.APIPATH, process.env.COSTOMPATH)
             vm.isLoading = true;
             this.$http.get(api).then((response) => {
@@ -52,7 +51,6 @@ export default {
     },
     created() {
         this.getOrders();
-        
     },
 }
 </script>
