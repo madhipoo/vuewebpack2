@@ -75,7 +75,14 @@
                     </div>
                 </div>
             </div>
+<<<<<<< HEAD
         </div> 
+=======
+        </div>
+
+        <div class="row justify-content-center mt-5" v-if="cart.total!==0">
+            <div class="row justify-content-center mt-5">
+>>>>>>> master
 
         <div class="my-5 row justify-content-center" v-if="cart.total!=0">
             <div class="my-5 row justify-content-center">
@@ -117,7 +124,11 @@
                 <div class="input-group mb-3 input-group-sm">
                     <input type="text" class="form-control" v-model="coupon_code" placeholder="請輸入優惠碼">
                     <div class="input-group-append">
+<<<<<<< HEAD
                         <button class="btn btn-outline-secondary" type="button" @click="addCouponCode">
+=======
+                        <button class="btn btn-outline-secondary" type="button" @click="addCouponCode" >
+>>>>>>> master
                         套用優惠碼
                         </button>
                     </div>
@@ -125,9 +136,15 @@
 
             </div>
         </div>
+<<<<<<< HEAD
 
         <div class="my-5 row justify-content-center">
             <form class="col-md-6" @submit.prevent="createOrder">
+=======
+        
+        <div class="my-5 row justify-content-center">
+            <form class="col-md-6">
+>>>>>>> master
                 <div class="form-group">
                 <label for="useremail">Email</label>
                 <input type="email" class="form-control" name="email" id="useremail"
@@ -138,8 +155,13 @@
                 <div class="form-group">
                 <label for="username">收件人姓名</label>
                 <input type="text" class="form-control" name="name" id="username"
+<<<<<<< HEAD
                     v-model="form.user.name" v-validate="'required'" placeholder="輸入姓名">
                 <span class="text-danger">{{errors.has('name')}}</span>
+=======
+                    v-model="form.user.name" v-validate="required" placeholder="輸入姓名">
+                <span class="text-danger"></span>
+>>>>>>> master
                 </div>
             
                 <div class="form-group">
@@ -165,6 +187,10 @@
         </div>
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
 
     </div>
 </template>
@@ -188,10 +214,17 @@ export default {
                     name:'',
                     email:'',
                     tel:'',
+<<<<<<< HEAD
                     address:'',
                 },
                 message:'',
             },
+=======
+                    address:'',                    
+                },
+                message:'',
+            }
+>>>>>>> master
         }
     },
     methods: {
@@ -239,6 +272,7 @@ export default {
                 // console.log(response);
                 vm.isLoading = false;
                 vm.cart = response.data.data;
+<<<<<<< HEAD
             });
         },
         removeCartItem(id){
@@ -275,6 +309,31 @@ export default {
             });
         },
         
+=======
+            });
+        },
+        removeCartItem(id){
+            const api = `${process.env.APIPATH}/api/${process.env.COSTOMPATH}/cart/${id}`;
+            const vm = this;
+            vm.isLoading = true;
+            this.$http.delete(api).then(() => {
+                vm.isLoading = false;
+                vm.getCart();
+            });
+        },
+        addCouponCode(){
+            const api = `${process.env.APIPATH}/api/${process.env.COSTOMPATH}/coupon`;
+            const vm = this;
+            const coupon = {
+                code: vm.coupon_code
+            }
+            vm.isLoading = true;
+            this.$http.post(api,{data:coupon}).then((response) => {
+                vm.isLoading = false;
+                vm.getCart();
+            });
+        },
+>>>>>>> master
     },
     created() {
         this.getProducts();

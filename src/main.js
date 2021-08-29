@@ -4,6 +4,7 @@ import Vue from 'vue';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 import Loading from 'vue-loading-overlay';
+import VeeValidate from 'vee-validate';
 
 import 'vue-loading-overlay/dist/vue-loading.css';
 import 'bootstrap';
@@ -13,7 +14,8 @@ import router from './router';
 import './bus';
 import currencyFilter from './filters/currency';
 
-Vue.use(VueAxios, axios)
+Vue.use(VueAxios, axios);
+Vue.use(VeeValidate);
 Vue.config.productionTip = false
 
 Vue.component('Loading', Loading);
