@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import VeeValidate from 'vee-validate';
 //官方的元件
 
 //@ = src的路徑
@@ -18,6 +19,9 @@ import Coupons from '@/components/pages/Coupons';
 import CustomerOrders from '@/components/pages/CustomerOrders';
 //自訂分頁元件
 Vue.use(VueRouter);
+Vue.use(VeeValidate);
+
+
 
 export default new VueRouter({
     routes: [{

@@ -5,8 +5,8 @@
         <div class="row mt-4" >
             <div class="col-md-4 mb-4" v-for="item in products" :key="item.id">
                 <div class="card border-0 shadow-sm">
-                    <div style="height: 150px; background-size: cover; background-position: center">
-                    <!--:style="{backgroundImage:`url(${item.imageUrl})`}"-->
+                    <div style="height: 150px; background-size: cover; background-position: center" :style="{backgroundImage:`url(${item.imageUrl})`}">
+                    <!---->
                     </div>
                     <div class="card-body">
                     <span class="badge badge-secondary float-right ml-2">{{item.category}}</span>
@@ -40,14 +40,15 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">
-                        {{product.title}}
+                            {{product.title}}
                         </h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <img :src="product.image" class="img-fluid" alt="商品圖片">
+                        <img :src="product.imageUrl" class="img-fluid" alt="相關圖片">
+
                         <blockquote class="blockqoute mt-3">
                             <p class="mb-0">{{product.content}}</p>
                             <footer class="blockqoute-footer text-right">{{product.description}}</footer>
@@ -74,10 +75,9 @@
                     </div>
                 </div>
             </div>
-            
         </div> 
 
-        <div class="my-5 row justify-content-center">
+        <div class="my-5 row justify-content-center" v-if="cart.total!=0">
             <div class="my-5 row justify-content-center">
                 <table class="table">
                     <thead>
@@ -88,19 +88,19 @@
                     </thead>
                     <tbody>
                         <tr v-for="item in cart.carts" :key="item.id" v-if="cart.carts">
-                            <td class="align-middle">
-                                <button type="button" class="btn btn-outline-danger btn-sm">
-                                <i class="far fa-trash-alt"></i>
-                                </button>
-                            </td>
-                            <td class="align-middle">
-                                {{ item.product.title }}
-                                <!-- <div class="text-success" v-if="item.coupon">
-                                已套用優惠券
-                                </div> -->
-                            </td>
-                            <td class="align-middle">{{ item.qty }}/{{ item.product.unit }}</td>
-                            <td class="align-middle text-right">{{ item.final_total }}</td>
+                        <td class="align-middle">
+                            <button type="button" class="btn btn-outline-danger btn-sm" @click="removeCartItem(item.id)">
+                            <i class="far fa-trash-alt"></i>
+                            </button>
+                        </td>
+                        <td class="align-middle">
+                            {{ item.product.title }}
+                            <div class="text-success" v-if="item.coupon">
+                            已套用優惠券
+                            </div>
+                        </td>
+                        <td class="align-middle">{{ item.qty }}/{{ item.product.unit }}</td>
+                        <td class="align-middle text-right">{{ item.final_total }}</td>
                         </tr>
                     </tbody>
                     <tfoot>
@@ -108,16 +108,16 @@
                             <td colspan="3" class="text-right">總計</td>
                             <td class="text-right">{{ cart.total }}</td>
                         </tr>
-                        <!--<tr>
+                        <tr v-if="cart.final_total !==cart.total">
                             <td colspan="3" class="text-right text-success">折扣價</td>
                             <td class="text-right text-success">{{ cart.final_total }}</td>
-                        </tr>-->
+                        </tr>
                     </tfoot>
                 </table>
                 <div class="input-group mb-3 input-group-sm">
-                    <input type="text" class="form-control" placeholder="請輸入優惠碼">
+                    <input type="text" class="form-control" v-model="coupon_code" placeholder="請輸入優惠碼">
                     <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button">
+                        <button class="btn btn-outline-secondary" type="button" @click="addCouponCode">
                         套用優惠碼
                         </button>
                     </div>
@@ -125,6 +125,47 @@
 
             </div>
         </div>
+
+        <div class="my-5 row justify-content-center">
+            <form class="col-md-6" @submit.prevent="createOrder">
+                <div class="form-group">
+                <label for="useremail">Email</label>
+                <input type="email" class="form-control" name="email" id="useremail"
+                    v-model="form.user.email" placeholder="請輸入 Email" required>
+                <span class="text-danger"></span>
+                </div>
+            
+                <div class="form-group">
+                <label for="username">收件人姓名</label>
+                <input type="text" class="form-control" name="name" id="username"
+                    v-model="form.user.name" v-validate="'required'" placeholder="輸入姓名">
+                <span class="text-danger">{{errors.has('name')}}</span>
+                </div>
+            
+                <div class="form-group">
+                <label for="usertel">收件人電話</label>
+                <input type="tel" class="form-control" id="usertel" v-model="form.user.tel" placeholder="請輸入電話">
+                </div>
+            
+                <div class="form-group">
+                <label for="useraddress">收件人地址</label>
+                <input type="text" class="form-control" name="address" id="useraddress" v-model="form.user.address"
+                    placeholder="請輸入地址">
+                <span class="text-danger">地址欄位不得留空</span>
+                </div>
+            
+                <div class="form-group">
+                <label for="comment">留言</label>
+                <textarea name="" id="comment" class="form-control" cols="30" rows="10" v-model="form.message"></textarea>
+                </div>
+                <div class="text-right">
+                <button class="btn btn-danger">送出訂單</button>
+                </div>
+            </form>
+        </div>
+
+
+
     </div>
 </template>
 
@@ -142,6 +183,15 @@ export default {
             isLoading:false,
             cart:{},
             coupon_code:'',
+            form:{
+                user:{
+                    name:'',
+                    email:'',
+                    tel:'',
+                    address:'',
+                },
+                message:'',
+            },
         }
     },
     methods: {
@@ -160,8 +210,8 @@ export default {
             const vm = this;
             vm.status.loadingItem = id;
             this.$http.get(api).then((response) => {
-                vm.product = response.data.product;
                 // console.log(response);
+                vm.product = response.data.product;
                 vm.status.loadingItem = '';
                 $('#productModal').modal('show')
             });
@@ -175,10 +225,10 @@ export default {
                 qty,
             }
             this.$http.post(api,{ data: cart }).then((response) => {
-                console.log(response);
+                // console.log(response);
                 vm.status.loadingItem = '';
                 vm.getCart();
-                $('#productModal').modal('hide')
+                $('#productModal').modal('hide');
             });
         },
         getCart(){
@@ -186,32 +236,45 @@ export default {
             const vm = this;
             vm.isLoading = true;
             this.$http.get(api).then((response) => {
-                console.log(response);
+                // console.log(response);
                 vm.isLoading = false;
-                // vm.products = response.data.products;
+                vm.cart = response.data.data;
             });
         },
-        // removeCartItem(id){
-        //     const api = `${process.env.APIPATH}/api/${process.env.COSTOMPATH}/cart/${id}`;
-        //     const vm = this;
-        //     vm.isLoading = true;
-        //     this.$http.delete(api).then(() => {
-        //         vm.isLoading = false;
-        //         vm.getCart();
-        //     });
-        // },
-        // addCouponCode(){
-        //     const api = `${process.env.APIPATH}/api/${process.env.COSTOMPATH}/coupon`;
-        //     const vm = this;
-        //     const coupon = {
-        //         code: vm.coupon_code
-        //     }
-        //     vm.isLoading = true;
-        //     this.$http.post(api,{data:coupon}).then((response) => {
-        //         vm.isLoading = false;
-        //         vm.getCart();
-        //     });
-        // },
+        removeCartItem(id){
+            const api = `${process.env.APIPATH}/api/${process.env.COSTOMPATH}/cart/${id}`;
+            const vm = this;
+            vm.isLoading = true;
+            this.$http.delete(api).then(() => {
+                vm.isLoading = false;
+                vm.getCart();
+            });
+        },
+        addCouponCode(){
+            const api = `${process.env.APIPATH}/api/${process.env.COSTOMPATH}/coupon`;
+            const vm = this;
+            const coupon = {
+                code: vm.coupon_code
+            }
+            vm.isLoading = true;
+            this.$http.post(api,{data:coupon}).then((response) => {
+                vm.isLoading = false;
+                vm.getCart();
+            });
+        },
+        createOrder(){
+            const api = `${process.env.APIPATH}/api/${process.env.COSTOMPATH}/order`;
+            const vm = this;
+            const order = vm.form;
+            vm.isLoading = true;
+
+            this.$http.post(api,{data:order}).then((response) => {
+                console.log('訂單已建立',response);
+                vm.isLoading = false;
+                
+            });
+        },
+        
     },
     created() {
         this.getProducts();
