@@ -75,7 +75,7 @@
             </div>
         </div>
 
-        <div class="row justify-content-center mt-5">
+        <div class="row justify-content-center mt-5" v-if="cart.total!==0">
             <div class="row justify-content-center mt-5">
 
                 <table class="table">
@@ -114,13 +114,9 @@
                     </tfoot>
                 </table>
                 <div class="input-group mb-3 input-group-sm">
-                    <input type="text" class="form-control"  placeholder="請輸入優惠碼">
+                    <input type="text" class="form-control" v-model="coupon_code" placeholder="請輸入優惠碼">
                     <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button" >
-                        
-                        <!--v-modal="coupon_code"
-                        @click="addCouponCode"-->
-                        
+                        <button class="btn btn-outline-secondary" type="button" @click="addCouponCode" >
                         套用優惠碼
                         </button>
                     </div>
@@ -129,7 +125,46 @@
             </div>
         </div>
         
-        
+        <div class="my-5 row justify-content-center">
+            <form class="col-md-6">
+                <div class="form-group">
+                <label for="useremail">Email</label>
+                <input type="email" class="form-control" name="email" id="useremail"
+                    v-model="form.user.email" placeholder="請輸入 Email" required>
+                <span class="text-danger"></span>
+                </div>
+            
+                <div class="form-group">
+                <label for="username">收件人姓名</label>
+                <input type="text" class="form-control" name="name" id="username"
+                    v-model="form.user.name" v-validate="required" placeholder="輸入姓名">
+                <span class="text-danger"></span>
+                </div>
+            
+                <div class="form-group">
+                <label for="usertel">收件人電話</label>
+                <input type="tel" class="form-control" id="usertel" v-model="form.user.tel" placeholder="請輸入電話">
+                </div>
+            
+                <div class="form-group">
+                <label for="useraddress">收件人地址</label>
+                <input type="text" class="form-control" name="address" id="useraddress" v-model="form.user.address"
+                    placeholder="請輸入地址">
+                <span class="text-danger">地址欄位不得留空</span>
+                </div>
+            
+                <div class="form-group">
+                <label for="comment">留言</label>
+                <textarea name="" id="comment" class="form-control" cols="30" rows="10" v-model="form.message"></textarea>
+                </div>
+                <div class="text-right">
+                <button class="btn btn-danger">送出訂單</button>
+                </div>
+            </form>
+        </div>
+
+
+
 
     </div>
 </template>
@@ -148,6 +183,15 @@ export default {
             isLoading:false,
             cart:{},
             coupon_code:'',
+            form:{
+                user:{
+                    name:'',
+                    email:'',
+                    tel:'',
+                    address:'',                    
+                },
+                message:'',
+            }
         }
     },
     methods: {
@@ -194,30 +238,30 @@ export default {
             this.$http.get(api).then((response) => {
                 console.log(response);
                 vm.isLoading = false;
-                // vm.products = response.data.products;
+                vm.cart = response.data.data;
             });
         },
-        // removeCartItem(id){
-        //     const api = `${process.env.APIPATH}/api/${process.env.COSTOMPATH}/cart/${id}`;
-        //     const vm = this;
-        //     vm.isLoading = true;
-        //     this.$http.delete(api).then(() => {
-        //         vm.isLoading = false;
-        //         vm.getCart();
-        //     });
-        // },
-        // addCouponCode(){
-        //     const api = `${process.env.APIPATH}/api/${process.env.COSTOMPATH}/coupon`;
-        //     const vm = this;
-        //     const coupon = {
-        //         code: vm.coupon_code
-        //     }
-        //     vm.isLoading = true;
-        //     this.$http.post(api,{data:coupon}).then((response) => {
-        //         vm.isLoading = false;
-        //         vm.getCart();
-        //     });
-        // },
+        removeCartItem(id){
+            const api = `${process.env.APIPATH}/api/${process.env.COSTOMPATH}/cart/${id}`;
+            const vm = this;
+            vm.isLoading = true;
+            this.$http.delete(api).then(() => {
+                vm.isLoading = false;
+                vm.getCart();
+            });
+        },
+        addCouponCode(){
+            const api = `${process.env.APIPATH}/api/${process.env.COSTOMPATH}/coupon`;
+            const vm = this;
+            const coupon = {
+                code: vm.coupon_code
+            }
+            vm.isLoading = true;
+            this.$http.post(api,{data:coupon}).then((response) => {
+                vm.isLoading = false;
+                vm.getCart();
+            });
+        },
     },
     created() {
         this.getProducts();

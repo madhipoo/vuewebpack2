@@ -18,7 +18,6 @@ import Coupons from '@/components/pages/Coupons';
 import CustomerOrders from '@/components/pages/CustomerOrders';
 //自訂分頁元件
 Vue.use(VueRouter);
-
 export default new VueRouter({
     routes: [{
             //避免進入不存在的頁面
