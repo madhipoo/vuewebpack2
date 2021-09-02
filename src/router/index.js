@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import VeeValidate from 'vee-validate';
 //官方的元件
 
 //@ = src的路徑
@@ -19,13 +18,9 @@ import Coupons from '@/components/pages/Coupons';
 import CustomerOrders from '@/components/pages/CustomerOrders';
 //自訂分頁元件
 Vue.use(VueRouter);
-<<<<<<< HEAD
-Vue.use(VeeValidate);
 
 
 
-=======
->>>>>>> master
 export default new VueRouter({
     routes: [{
             //避免進入不存在的頁面
@@ -79,7 +74,7 @@ export default new VueRouter({
                 path: 'orders',
                 name: 'Orders',
                 component: Orders,
-                meta: { requiresAuth: true },
+                // meta: { requiresAuth: true },
             }, {
                 path: 'coupons',
                 name: 'Coupons',

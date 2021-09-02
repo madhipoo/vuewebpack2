@@ -4,7 +4,6 @@ import Vue from 'vue';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 import Loading from 'vue-loading-overlay';
-import VeeValidate from 'vee-validate';
 
 import 'vue-loading-overlay/dist/vue-loading.css';
 import 'bootstrap';
@@ -15,8 +14,28 @@ import './bus';
 import currencyFilter from './filters/currency';
 
 Vue.use(VueAxios, axios);
-Vue.use(VeeValidate);
 Vue.config.productionTip = false
+
+import { ValidationObserver, ValidationProvider, extend, localize, configure } from 'vee-validate';
+import TW from 'vee-validate/dist/locale/zh_TW.json';
+import * as rules from 'vee-validate/dist/rules';
+
+Object.keys(rules).forEach((rule) => {
+    extend(rule, rules[rule]);
+});
+
+localize('zh_TW', TW);
+
+Vue.component('ValidationObserver', ValidationObserver)
+Vue.component('ValidationProvider', ValidationProvider)
+
+configure({
+    classes: {
+        valid: 'is-valid',
+        invalid: 'is-invalid'
+    }
+});
+
 
 Vue.component('Loading', Loading);
 Vue.filter('currency', currencyFilter);
