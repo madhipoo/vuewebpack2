@@ -16,6 +16,7 @@ import Orders from '@/components/pages/Orders';
 import Coupons from '@/components/pages/Coupons';
 
 import CustomerOrders from '@/components/pages/CustomerOrders';
+import CustomerCheckout from '@/components/pages/CustomerCheckout';
 //自訂分頁元件
 Vue.use(VueRouter);
 export default new VueRouter({
@@ -71,7 +72,7 @@ export default new VueRouter({
                 path: 'orders',
                 name: 'Orders',
                 component: Orders,
-                meta: { requiresAuth: true },
+                // meta: { requiresAuth: true },
             }, {
                 path: 'coupons',
                 name: 'Coupons',
@@ -89,6 +90,10 @@ export default new VueRouter({
                 component: CustomerOrders,
                 // meta: { requiresAuth: true },
                 // 不須經過驗證
+            }, {
+                path: 'customer_checkout/:orderId',
+                name: 'CustomerCheckout',
+                component: CustomerCheckout,
             }, ]
         },
     ],

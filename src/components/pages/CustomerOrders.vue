@@ -86,7 +86,7 @@
                         <th>單價</th>
                     </thead>
                     <tbody>
-                        <tr v-for="item in cart.carts" :key="item.id" v-if="cart.carts">
+                        <tr v-for="item in cart.carts" :key="item.id">
                         <td class="align-middle">
                             <button type="button" class="btn btn-outline-danger btn-sm" @click="removeCartItem(item.id)">
                             <i class="far fa-trash-alt"></i>
@@ -126,45 +126,56 @@
         </div>
         
         <div class="my-5 row justify-content-center">
-            <form class="col-md-6">
-                <div class="form-group">
-                <label for="useremail">Email</label>
-                <input type="email" class="form-control" name="email" id="useremail"
-                    v-model="form.user.email" placeholder="請輸入 Email" required>
-                <span class="text-danger"></span>
-                </div>
-            
-                <div class="form-group">
-                <label for="username">收件人姓名</label>
-                <input type="text" class="form-control" name="name" id="username"
-                    v-model="form.user.name" v-validate="required" placeholder="輸入姓名">
-                <span class="text-danger"></span>
-                </div>
-            
-                <div class="form-group">
-                <label for="usertel">收件人電話</label>
-                <input type="tel" class="form-control" id="usertel" v-model="form.user.tel" placeholder="請輸入電話">
-                </div>
-            
-                <div class="form-group">
-                <label for="useraddress">收件人地址</label>
-                <input type="text" class="form-control" name="address" id="useraddress" v-model="form.user.address"
-                    placeholder="請輸入地址">
-                <span class="text-danger">地址欄位不得留空</span>
-                </div>
-            
-                <div class="form-group">
-                <label for="comment">留言</label>
-                <textarea name="" id="comment" class="form-control" cols="30" rows="10" v-model="form.message"></textarea>
-                </div>
-                <div class="text-right">
-                <button class="btn btn-danger">送出訂單</button>
-                </div>
-            </form>
+            <validation-observer class="col-md-6" v-slot="{invalid, handleSubmit}">
+                <form  @submit.prevent="handleSubmit(createOreder)">
+
+                    <validation-provider rules="required|email" v-slot="{errors, classes, passed}">
+                        <div class="form-group">
+                            <!-- 輸入框 -->
+                            <label for="email">Email</label>
+                            <input id="email" type="email" name="email" placeholder="輸入信箱"
+                            v-model="form.user.email" class="form-control" :class="classes">
+                            <!-- 錯誤訊息 -->
+                            <span class="invalid-feedback">{{errors[0]}}</span>
+                            <span v-if="passed" class="valid-feedback">Email正確</span>
+                        </div>
+                    </validation-provider>
+
+                    <validation-provider rules="required" v-slot="{errors, classes}">
+                        <div class="form-group">
+                            <label for="username">收件人姓名</label>
+                            <input type="text" class="form-control" name="name" id="username"
+                                :class="classes" v-model="form.user.name"  placeholder="輸入姓名">
+                            <span class="invalid-feedback" >名字必須輸入</span>
+                        </div>
+                    </validation-provider>
+
+                    <div class="form-group">
+                        <label for="usertel">收件人電話</label>
+                        <input type="tel" class="form-control" id="usertel" v-model="form.user.tel" placeholder="請輸入電話">
+                    </div>
+
+                    <validation-provider rules="required" v-slot="{errors, classes}">
+                        <div class="form-group">
+                            <label for="useraddress">收件人地址</label>
+                            <input type="text" class="form-control" name="address" id="useraddress" v-model="form.user.address"
+                                placeholder="請輸入地址" :class="classes">
+                            <span class="invalid-feedback">地址欄位不得留空</span>
+                        </div>
+                    </validation-provider>
+                    
+                
+                    <div class="form-group">
+                        <label for="comment">留言</label>
+                        <textarea name="" id="comment" class="form-control" cols="30" rows="10" v-model="form.message"></textarea>
+                    </div>
+                    
+                    <div class="text-right">
+                        <button class="btn btn-danger" :disabled="invalid">送出訂單</button>
+                    </div>
+                </form>
+            </validation-observer>
         </div>
-
-
-
 
     </div>
 </template>
@@ -262,6 +273,19 @@ export default {
                 vm.getCart();
             });
         },
+        createOreder(){
+            const api = `${process.env.APIPATH}/api/${process.env.COSTOMPATH}/order`;
+            const vm = this;
+            const order = vm.form;
+
+            this.$http.post(api,{data:order}).then((response) => {
+                console.log('訂單已建立',response);
+                if(response.data.success){
+                    vm.$router.push(`/customer_checkout/${response.data.orderId}`);
+                }
+            });
+        },
+
     },
     created() {
         this.getProducts();

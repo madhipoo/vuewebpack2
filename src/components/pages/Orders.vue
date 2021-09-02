@@ -14,7 +14,7 @@
                 <tr v-for="(item) in orders" :key="item.id">
                     <td>{{item.paid_data}}</td>
                     <td>{{item.user.email}}</td>
-                    <td>{{item.products}}</td>
+                    <td>{{item.products.product}}</td>
                     <td class="text-right">{{item.total | currency}}</td>
                     <td>
                         <span v-if="item.is_paid" class="text-success">啟用</span>
@@ -42,7 +42,7 @@ export default {
             // console.log(process.env.APIPATH, process.env.COSTOMPATH)
             vm.isLoading = true;
             this.$http.get(api).then((response) => {
-                console.log(response.data);
+                console.log(response);
                 vm.isLoading = false;
                 vm.orders = response.data.orders;
                 // vm.pagination = response.data.pagination;
