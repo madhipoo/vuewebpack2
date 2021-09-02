@@ -4,6 +4,17 @@ import Vue from 'vue';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 import Loading from 'vue-loading-overlay';
+//vee-validate : 訂單驗證
+//新版 vee-validate用原件來載入
+import {
+    ValidationObserver,
+    ValidationProvider,
+    extend,
+    localize,
+    configure
+} from "vee-validate";
+import TW from "vee-validate/dist/locale/zh_TW.json";
+import * as rules from "vee-validate/dist/rules";
 
 import 'vue-loading-overlay/dist/vue-loading.css';
 import 'bootstrap';
@@ -16,27 +27,42 @@ import currencyFilter from './filters/currency';
 Vue.use(VueAxios, axios);
 Vue.config.productionTip = false
 
+<<<<<<< HEAD
 import { ValidationObserver, ValidationProvider, extend, localize, configure } from 'vee-validate';
 import TW from 'vee-validate/dist/locale/zh_TW.json';
 import * as rules from 'vee-validate/dist/rules';
 
+=======
+>>>>>>> master
 Object.keys(rules).forEach((rule) => {
     extend(rule, rules[rule]);
 });
 
 localize('zh_TW', TW);
 
+<<<<<<< HEAD
 Vue.component('ValidationObserver', ValidationObserver)
 Vue.component('ValidationProvider', ValidationProvider)
+=======
+Vue.component('ValidationObserver', ValidationObserver);
+Vue.component('ValidationProvider', ValidationProvider);
+>>>>>>> master
 
 configure({
     classes: {
         valid: 'is-valid',
+<<<<<<< HEAD
         invalid: 'is-invalid'
     }
 });
 
 
+=======
+        invalid: 'is-invalid',
+    },
+});
+
+>>>>>>> master
 Vue.component('Loading', Loading);
 Vue.filter('currency', currencyFilter);
 

@@ -16,11 +16,15 @@ import Orders from '@/components/pages/Orders';
 import Coupons from '@/components/pages/Coupons';
 
 import CustomerOrders from '@/components/pages/CustomerOrders';
+import CustomerCheckout from '@/components/pages/CustomerCheckout';
 //自訂分頁元件
 Vue.use(VueRouter);
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> master
 export default new VueRouter({
     routes: [{
             //避免進入不存在的頁面
@@ -92,6 +96,10 @@ export default new VueRouter({
                 component: CustomerOrders,
                 // meta: { requiresAuth: true },
                 // 不須經過驗證
+            }, {
+                path: 'customer_checkout/:orderId',
+                name: 'CustomerCheckout',
+                component: CustomerCheckout,
             }, ]
         },
     ],
