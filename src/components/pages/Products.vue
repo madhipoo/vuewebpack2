@@ -33,27 +33,9 @@
         </table>
 
 
-        <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            <li class="page-item" :class="{'disabled':!pagination.has_pre}">
-            <a class="page-link" href="#" aria-label="Previous" @click="getProducts(pagination.current_page - 1)">
-                <span aria-hidden="true">&laquo;</span>
-            </a>
-            </li>
-            <li class="page-item"  v-for="page in pagination.total_pages" :key="page"
-            :class="{'active':pagination.current_page === page}">
-                <a class="page-link" href="#" @click="getProducts(page)">{{page}}</a>
-            </li>
-            
-            <li class="page-item" :class="{'disabled':!pagination.has_next}">
-            <a class="page-link" href="#" aria-label="Next" @click="getProducts(pagination.current_page + 1)">
-                <span aria-hidden="true">&raquo;</span>
-            </a>
-            </li>
-        </ul>
-        </nav>
+        <Pagination :pages="pagination" @emitPages="getProducts"></Pagination>
 
-
+        <!--Modal-->
 
         <div class="modal fade" id="productModal" tabindex="-1" role="dialog"
         aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -176,7 +158,8 @@
     </div>
 </template>
 <script>
-import $ from 'jquery'
+import $ from 'jquery';
+import Pagination from '../Pagination';
 
 export default {
     data(){
@@ -191,6 +174,9 @@ export default {
             },
         }
     },
+    components:{
+        Pagination,
+    },
     methods:{
         getProducts(page = 1){
             const api = `${process.env.APIPATH}/api/${process.env.COSTOMPATH}/products?page=${page}`;//'https://vue-course-api.hexschool.io/api/leviathan91608/products';
@@ -201,9 +187,12 @@ export default {
             vm.isLoading = true;
             this.$http.get(api).then((response) => {
                 console.log(response.data);
-                vm.isLoading = false;
-                vm.products = response.data.products;
-                vm.pagination = response.data.pagination;
+                if(response.data.success){
+                    vm.isLoading = false;
+                    vm.products = response.data.products;
+                    vm.pagination = response.data.pagination;
+                }
+                
             });
         },
         
