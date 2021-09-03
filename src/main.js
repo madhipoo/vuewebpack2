@@ -23,7 +23,9 @@ import App from './App';
 import router from './router';
 import './bus';
 import currencyFilter from './filters/currency';
+import dateFilter from './filters/date';
 
+<<<<<<< HEAD
 Vue.use(VueAxios, axios);
 Vue.config.productionTip = false
 
@@ -34,6 +36,12 @@ import * as rules from 'vee-validate/dist/rules';
 
 =======
 >>>>>>> master
+=======
+
+Vue.use(VueAxios, axios);
+Vue.config.productionTip = false
+
+>>>>>>> master
 Object.keys(rules).forEach((rule) => {
     extend(rule, rules[rule]);
 });
@@ -41,8 +49,13 @@ Object.keys(rules).forEach((rule) => {
 localize('zh_TW', TW);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Vue.component('ValidationObserver', ValidationObserver)
 Vue.component('ValidationProvider', ValidationProvider)
+=======
+Vue.component('ValidationObserver', ValidationObserver);
+Vue.component('ValidationProvider', ValidationProvider);
+>>>>>>> master
 =======
 Vue.component('ValidationObserver', ValidationObserver);
 Vue.component('ValidationProvider', ValidationProvider);
@@ -52,19 +65,26 @@ configure({
     classes: {
         valid: 'is-valid',
 <<<<<<< HEAD
+<<<<<<< HEAD
         invalid: 'is-invalid'
     }
 });
 
 
 =======
+=======
+>>>>>>> master
         invalid: 'is-invalid',
     },
 });
 
+<<<<<<< HEAD
+>>>>>>> master
+=======
 >>>>>>> master
 Vue.component('Loading', Loading);
 Vue.filter('currency', currencyFilter);
+Vue.filter('date', dateFilter);
 
 axios.defaults.withCredentials = true
     /* eslint-disable no-new */

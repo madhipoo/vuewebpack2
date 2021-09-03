@@ -20,9 +20,12 @@ import CustomerCheckout from '@/components/pages/CustomerCheckout';
 //自訂分頁元件
 Vue.use(VueRouter);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> master
 =======
 >>>>>>> master
 export default new VueRouter({
